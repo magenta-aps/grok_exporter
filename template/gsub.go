@@ -19,14 +19,15 @@ import (
 	"github.com/fstab/grok_exporter/oniguruma"
 	"os"
 	"text/template/parse"
+    "github.com/fstab/grok_exporter/plugins"
 )
 
 var cache = make(map[string]*oniguruma.Regex)
 
-func newGsubFunc() functionWithValidator {
-	return functionWithValidator{
-		function:        gsub,
-		staticValidator: validateGsubCall,
+func newGsubFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function:        gsub,
+		StaticValidator: validateGsubCall,
 	}
 }
 

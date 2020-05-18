@@ -17,9 +17,41 @@ package template
 import (
 	textTemplate "text/template"
 	"text/template/parse"
+    "runtime"
+    "io/ioutil"
+    "log"
+    "path/filepath"
+    "plugin"
+    "github.com/fstab/grok_exporter/plugins"
 )
 
-var funcs functions = make(map[string]functionWithValidator)
+var funcs functions = make(map[string]plugins.FunctionWithValidator)
+
+func load_plugin(plugin_name string) {
+    p, err := plugin.Open("./dynamic/" + plugin_name)
+    if err != nil {
+        panic(err)
+    }
+    f, err := p.Lookup("Generate")
+    if err != nil {
+        panic(err)
+    }
+    label, func_val := f.(func() (string, plugins.FunctionWithValidator))()
+    funcs.add(label, func_val)
+}
+
+func read_plugin_folder() {
+    files, err := ioutil.ReadDir("./dynamic/")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    for _, f := range files {
+        if filepath.Ext(f.Name()) == ".so" {
+            load_plugin(f.Name())
+        }
+    }
+}
 
 func init() {
 	funcs.add("timestamp", newTimestampFunc())
@@ -29,23 +61,22 @@ func init() {
 	funcs.add("multiply", newMultiplyFunc())
 	funcs.add("divide", newDivideFunc())
 	funcs.add("base", newBaseFunc())
+
+    if runtime.GOOS != "windows" {
+        read_plugin_folder()
+    }
 }
 
-type functions map[string]functionWithValidator
+type functions map[string]plugins.FunctionWithValidator
 
-type functionWithValidator struct {
-	function        interface{}
-	staticValidator func(cmd *parse.CommandNode) error
-}
-
-func (funcs functions) add(name string, f functionWithValidator) {
+func (funcs functions) add(name string, f plugins.FunctionWithValidator) {
 	funcs[name] = f
 }
 
 func (funcs functions) toFuncMap() textTemplate.FuncMap {
 	result := make(textTemplate.FuncMap, len(funcs))
 	for name, f := range funcs {
-		result[name] = f.function
+		result[name] = f.Function
 	}
 	return result
 }
@@ -55,5 +86,5 @@ func (funcs functions) validate(name string, cmd *parse.CommandNode) error {
 	if !exists {
 		return nil // not one of our custom functions, skip validation
 	}
-	return f.staticValidator(cmd)
+	return f.StaticValidator(cmd)
 }

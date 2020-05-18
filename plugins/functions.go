@@ -1,4 +1,4 @@
-// Copyright 2019-2020 The grok_exporter Authors
+// Copyright 2018-2020 The grok_exporter Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,30 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package template
+package plugins
 
 import (
-	"fmt"
-	"path/filepath"
 	"text/template/parse"
-    "github.com/fstab/grok_exporter/plugins"
 )
 
-func newBaseFunc() plugins.FunctionWithValidator {
-	return plugins.FunctionWithValidator{
-		Function:        base,
-		StaticValidator: validateBaseCall,
-	}
-}
-
-func base(path string) string {
-	return filepath.Base(path)
-}
-
-func validateBaseCall(cmd *parse.CommandNode) error {
-	prefix := "syntax error in base call"
-	if len(cmd.Args) != 2 {
-		return fmt.Errorf("%v: expected one parameter, but found %v parameters", prefix, len(cmd.Args)-1)
-	}
-	return nil
+type FunctionWithValidator struct {
+	Function        interface{}
+	StaticValidator func(cmd *parse.CommandNode) error
 }

@@ -19,12 +19,13 @@ import (
 	"strings"
 	"text/template/parse"
 	"time"
+    "github.com/fstab/grok_exporter/plugins"
 )
 
-func newTimestampFunc() functionWithValidator {
-	return functionWithValidator{
-		function:        timestamp,
-		staticValidator: validateTimestampCall,
+func newTimestampFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function:        timestamp,
+		StaticValidator: validateTimestampCall,
 	}
 }
 

@@ -24,7 +24,7 @@ func TestReferencedGrokFields(t *testing.T) {
 
 	// Some template actions require arrays as parameters.
 	// Provide a function returning an array so that we can test these actions.
-	funcs.add("testarray", functionWithValidator{
+	funcs.add("testarray", FunctionWithValidator{
 		func(strings ...string) []string {
 			return strings
 		},

@@ -19,39 +19,40 @@ import (
 	"reflect"
 	"strconv"
 	"text/template/parse"
+    "github.com/fstab/grok_exporter/plugins"
 )
 
-func newAddFunc() functionWithValidator {
-	return functionWithValidator{
-		function: add,
-		staticValidator: func(cmd *parse.CommandNode) error {
+func newAddFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function: add,
+		StaticValidator: func(cmd *parse.CommandNode) error {
 			return validate("add", cmd)
 		},
 	}
 }
 
-func newSubtractFunc() functionWithValidator {
-	return functionWithValidator{
-		function: subtract,
-		staticValidator: func(cmd *parse.CommandNode) error {
+func newSubtractFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function: subtract,
+		StaticValidator: func(cmd *parse.CommandNode) error {
 			return validate("subtract", cmd)
 		},
 	}
 }
 
-func newMultiplyFunc() functionWithValidator {
-	return functionWithValidator{
-		function: multiply,
-		staticValidator: func(cmd *parse.CommandNode) error {
+func newMultiplyFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function: multiply,
+		StaticValidator: func(cmd *parse.CommandNode) error {
 			return validate("multiply", cmd)
 		},
 	}
 }
 
-func newDivideFunc() functionWithValidator {
-	return functionWithValidator{
-		function: divide,
-		staticValidator: func(cmd *parse.CommandNode) error {
+func newDivideFunc() plugins.FunctionWithValidator {
+	return plugins.FunctionWithValidator{
+		Function: divide,
+		StaticValidator: func(cmd *parse.CommandNode) error {
 			return validate("divide", cmd)
 		},
 	}
