@@ -383,7 +383,7 @@ labels:
 With the incoming log object being:
 
 ```json
-{"message": "Login occured", "user": "Skeen", "ip": "1.1.1.1"}'
+{"message": "Login occured", "user": "Skeen", "ip": "1.1.1.1"}
 ```
 
 ### Label Template Functions
